@@ -98,7 +98,7 @@ void HivekAssembler::HivekAssembler::assemble() {
 
                 inst = build_ri(opcode, ra, rb, immd16);
                 output.push_back(inst);
-                printf("%08x = %s\n", inst, lines[i].c_str());
+                printf("imap[0x%08x] = \"%s\";\n", inst, lines[i].c_str());
             } else if (opcode_type_map[opcode] == TYPE_RR) {
                 if (opcode == OPCODE_SYSCALL || opcode == OPCODE_HALT || opcode == OPCODE_JR) {
 
@@ -115,7 +115,7 @@ void HivekAssembler::HivekAssembler::assemble() {
 
                 inst = build_rr(opcode, ra, rb, rc);
                 output.push_back(inst);
-                printf("%08x = %s\n", inst, lines[i].c_str());
+                printf("imap[0x%08x] = \"%s\";\n", inst, lines[i].c_str());
             } else if (opcode_type_map[opcode] == TYPE_J) {
                 s >> tmp;
 
@@ -128,7 +128,7 @@ void HivekAssembler::HivekAssembler::assemble() {
 
                 inst = build_j(opcode, immd26);
                 output.push_back(inst);
-                printf("%08x = %s\n", inst, lines[i].c_str());
+                printf("imap[0x%08x] = \"%s\";\n", inst, lines[i].c_str());
             }
 
             ip += 4;
@@ -216,6 +216,9 @@ void HivekAssembler::HivekAssembler::build_reg_map() {
 
     regs_map["t0"] = REG_T0;
     regs_map["t0,"] = REG_T0;
+
+    regs_map["ra"] = REG_RA;
+    regs_map["ra,"] = REG_RA;
 }
 
 bool HivekAssembler::HivekAssembler::is_instruction(std::string& v) {
