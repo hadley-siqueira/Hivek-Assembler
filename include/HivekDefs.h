@@ -44,6 +44,30 @@ namespace HivekAssembler {
     const int TYPE_RR = 0;
     const int TYPE_RI = 1;
     const int TYPE_J = 2;
+
+    typedef enum Opcode {
+        OPCODE_24_ADD = 0,
+        OPCODE_24_SUB = 0x01,
+        OPCODE_24_AND = 0x02,
+        OPCODE_24_OR  = 0x03,
+        OPCODE_24_XOR = 0x04,
+
+        OPCODE_32_ADDI = 0,
+        OPCODE_32_ANDI = 1,
+        OPCODE_32_ORI  = 2,
+        OPCODE_32_XORI = 3,
+
+        // memory
+        OPCODE_32_LD = 0x9,
+        OPCODE_32_SD = 0x10,
+
+        // branches
+        OPCODE_32_BEQ = 0x18,
+        OPCODE_32_BNE = 0x19,
+        OPCODE_32_BLT = 0x1A,
+
+        OPCODE_32_JAL = 0xe3,
+    } Opcode;
 }
 
 #endif

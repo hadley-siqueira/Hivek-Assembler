@@ -72,7 +72,7 @@ void HivekAssembler::HivekAssembler::assemble() {
         s >> tmp;
 
         if (is_instruction(tmp)) {
-            int opcode  = opcode_map[tmp];;
+            int opcode  = opcode_map[tmp];
             int ra = 0;
             int rb = 0;
             int rc = 0;

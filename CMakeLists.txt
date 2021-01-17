@@ -7,6 +7,9 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -g")
 
 set(SOURCES
     src/HivekAssembler/HivekAssembler.cpp
+    src/token/Token.cpp
+    src/lex/Lex.cpp
+    src/instructions/Instruction.cpp
     src/main.cpp
 )
 
