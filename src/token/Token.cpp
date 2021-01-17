@@ -1,3 +1,5 @@
+#include <sstream>
+
 #include "token/Token.h"
 
 using namespace HivekAssembler;
@@ -13,4 +15,12 @@ Token::Token(TokenKind kind, int line, int column, std::string lexem) {
     this->line = line;
     this->column = column;
     this->lexem = lexem;
+}
+
+std::string Token::to_str() {
+    std::stringstream s;
+
+    s << "(" << lexem << ", " << line << ", " << column << ")";
+
+    return s.str();
 }
