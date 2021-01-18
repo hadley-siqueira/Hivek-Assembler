@@ -1,14 +1,15 @@
-#include "instructions/Instruction.h"
+#include "commands/instructions/Instruction.h"
 
 using namespace HivekAssembler;
 
-Instruction::Instruction(Opcode opcode, int rc, int ra, int rb) {
+Instruction::Instruction(Opcode opcode, Token &rc, Token &ra, Token &rb) {
     this->opcode = opcode;
     this->rc = rc;
     this->ra = ra;
     this->rb = rb;
 }
-        
+
+/*
 void Instruction::write(std::ofstream& file) {
     switch (opcode) {
     // alu
@@ -48,3 +49,4 @@ void Instruction::generate32(std::ofstream& file) {
     file.put((result >> 8)  & 0x0ff);
     file.put((result >> 0)  & 0x0ff);
 }
+*/

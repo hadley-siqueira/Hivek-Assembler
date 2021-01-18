@@ -97,6 +97,7 @@ std::vector<Token> Lex::read(std::string path) {
         }
     }
 
+    result.push_back(Token(TK_EOF, line, column));
     file.close();
     return result;
 }

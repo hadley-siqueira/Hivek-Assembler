@@ -9,7 +9,10 @@ set(SOURCES
     src/HivekAssembler/HivekAssembler.cpp
     src/token/Token.cpp
     src/lex/Lex.cpp
-    src/instructions/Instruction.cpp
+    src/parser/Parser.cpp
+    src/commands/Command.cpp
+    src/commands/instructions/Instruction.cpp
+    src/commands/label/Label.cpp
     src/main.cpp
 )
 

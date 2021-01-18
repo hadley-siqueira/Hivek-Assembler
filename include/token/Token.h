@@ -16,16 +16,30 @@ namespace HivekAssembler {
         // others
         TK_IDENTIFIER,
         TK_NUMBER,
-        TK_STRING
+        TK_STRING,
+        TK_EOF
     } TokenKind;
 
     class Token {
     public:
+        Token();
         Token(TokenKind kind, int line, int column);
         Token(TokenKind kind, int line, int column, std::string lexem);
 
     public:
         std::string to_str();
+
+        TokenKind getKind() const;
+        void setKind(const TokenKind &value);
+
+        int getLine() const;
+        void setLine(int value);
+
+        int getColumn() const;
+        void setColumn(int value);
+
+        std::string getLexem() const;
+        void setLexem(const std::string &value);
 
     private:
         TokenKind kind;
