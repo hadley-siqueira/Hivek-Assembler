@@ -105,6 +105,8 @@ namespace HivekAssembler {
         std::string getLexem() const;
         void setLexem(const std::string &value);
 
+        void makeNegative();
+
     private:
         TokenKind kind;
         int line;

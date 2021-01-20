@@ -6,3 +6,7 @@ using namespace HivekAssembler;
 Label::Label(Token &token) {
     this->token = token;
 }
+
+std::string Label::to_str() {
+    return token.getLexem() + ":";
+}

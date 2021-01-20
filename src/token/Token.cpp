@@ -68,3 +68,7 @@ void Token::setLexem(const std::string &value)
 {
     lexem = value;
 }
+
+void Token::makeNegative() {
+    lexem = "-" + lexem;
+}

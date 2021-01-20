@@ -12,6 +12,7 @@ using namespace HivekAssembler;
 Parser::Parser() {
     opcode_map[TK_ADD] = OPCODE_24_ADD;
     opcode_map[TK_SUB] = OPCODE_24_SUB;
+    opcode_map[TK_AND] = OPCODE_24_AND;
 
     for (int i = 0; i < 32; ++i) {
         std::stringstream s;
@@ -26,6 +27,8 @@ std::vector<Command*> Parser::read(std::string path) {
 
     current_token_idx = 0;
     tokens = lex.read(path);
+
+    parse_program();
 
     return commands;
 }
@@ -55,15 +58,16 @@ void Parser::parse_directive() {
 
 void Parser::parse_instruction() {
     TokenKind kind;
-    Opcode opcode;
+    Token opcode;
     Token ra;
     Token rb;
     Token rc;
     Token immd;
+    bool make_neg = false;
 
     match();
+    opcode = matched;
     kind = matched.getKind();
-    opcode = opcode_map[kind];
 
     switch (kind) {
     case TK_ADD:
@@ -100,6 +104,11 @@ void Parser::parse_instruction() {
         rb = matched;
 
         expect(TK_COMMA);
+
+        if (match(TK_UNARY_MINUS)) {
+            make_neg = true;
+        }
+
         if (match(TK_NUMBER)) {
             immd = matched;
         } else if (match(TK_IDENTIFIER)) {
@@ -109,10 +118,13 @@ void Parser::parse_instruction() {
             exit(0);
         }
 
+        if (make_neg) {
+            immd.makeNegative();
+        }
+
         commands.push_back(new Instruction(opcode, ra, rb, immd));
         break;
 
-        // ld rb, immd(ra)
     case TK_LD:
     case TK_LW:
     case TK_LH:
@@ -120,7 +132,38 @@ void Parser::parse_instruction() {
     case TK_LWU:
     case TK_LHU:
     case TK_LBU:
+    case TK_SD:
+    case TK_SW:
+    case TK_SH:
+    case TK_SB:
         parse_integer_register();
+        rb = matched;
+
+        expect(TK_COMMA);
+
+        if (match(TK_UNARY_MINUS)) {
+            make_neg = true;
+        }
+
+        if (match(TK_NUMBER)) {
+            immd = matched;
+        } else if (match(TK_IDENTIFIER)) {
+            immd = matched;
+        } else {
+            std::cout << "Error parsing ri instruction\n";
+            exit(0);
+        }
+
+        if (make_neg) {
+            immd.makeNegative();
+        }
+
+        expect(TK_LEFT_PARENTHESIS);
+        parse_integer_register();
+        ra = matched;
+        expect(TK_RIGHT_PARENTHESIS);
+        commands.push_back(new Instruction(opcode, ra, rb, immd));
+        break;
 
     default:
         std::cout << "Invalid instruction\n";

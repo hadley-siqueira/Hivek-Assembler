@@ -9,6 +9,9 @@ namespace HivekAssembler {
     public:
         Label(Token& token);
 
+    public:
+        std::string to_str();
+
     private:
         Token token;
     };

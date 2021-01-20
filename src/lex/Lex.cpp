@@ -127,15 +127,37 @@ std::vector<Token> Lex::read(std::string path) {
 
             lexem << (char) c;
             ++column;
+            bool is_zero = c == '0';
 
-            if (file.peek() == 'b' || file.peek() == 'o' || file.peek() == 'x') {
+            if (is_zero && file.peek() == 'b') {
                 lexem << (char) file.get();
                 ++column;
-            }
 
-            while (isdigit(file.peek())) {
+                while (file.peek() == '0' || file.peek() == '1') {
+                    lexem << (char) file.get();
+                    ++column;
+                }
+            } else if (is_zero && file.peek() == 'o') {
                 lexem << (char) file.get();
                 ++column;
+
+                while (file.peek() >= '0' && file.peek() <= '7') {
+                    lexem << (char) file.get();
+                    ++column;
+                }
+            } else if (is_zero && file.peek() == 'x') {
+                lexem << (char) file.get();
+                ++column;
+
+                while (isdigit(file.peek()) || (file.peek() >= 'a' && file.peek() <= 'f') || (file.peek() >= 'A' && file.peek() <= 'F'))  {
+                    lexem << (char) file.get();
+                    ++column;
+                }
+            } else {
+                while (isdigit(file.peek())) {
+                    lexem << (char) file.get();
+                    ++column;
+                }
             }
 
             result.push_back(Token(TK_NUMBER, line, old_column, lexem.str()));

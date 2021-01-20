@@ -1,12 +1,21 @@
+#include <sstream>
+
 #include "commands/instructions/Instruction.h"
 
 using namespace HivekAssembler;
 
-Instruction::Instruction(Opcode opcode, Token &ra, Token &rb, Token &rc_or_immd) {
+Instruction::Instruction(Token &opcode, Token &ra, Token &rb, Token &rc_or_immd) {
     this->opcode = opcode;
     this->rc_or_immd = rc_or_immd;
     this->ra = ra;
     this->rb = rb;
+}
+
+std::string Instruction::to_str() {
+    std::stringstream s;
+
+    s << opcode.getLexem() << " " << ra.getLexem() << ' ' << rb.getLexem() << ' ' << rc_or_immd.getLexem();
+    return s.str();
 }
 
 /*
