@@ -2,9 +2,9 @@
 
 using namespace HivekAssembler;
 
-Instruction::Instruction(Opcode opcode, Token &rc, Token &ra, Token &rb) {
+Instruction::Instruction(Opcode opcode, Token &ra, Token &rb, Token &rc_or_immd) {
     this->opcode = opcode;
-    this->rc = rc;
+    this->rc_or_immd = rc_or_immd;
     this->ra = ra;
     this->rb = rb;
 }

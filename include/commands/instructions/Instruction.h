@@ -11,14 +11,13 @@
 namespace HivekAssembler {
     class Instruction : public Command {
     public:
-        Instruction(Opcode opcode, Token& ra, Token& rb, Token& rc);
+        Instruction(Opcode opcode, Token& ra, Token& rb, Token& rc_or_immd);
 
     private:
         Opcode opcode;
         Token ra;
         Token rb;
-        Token rc;
-        Token immd;
+        Token rc_or_immd;
     };
 }
 

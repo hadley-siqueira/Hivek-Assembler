@@ -10,8 +10,8 @@
 using namespace HivekAssembler;
 
 Parser::Parser() {
-    opcode_map["add"] = OPCODE_24_ADD;
-    opcode_map["sub"] = OPCODE_24_SUB;
+    opcode_map[TK_ADD] = OPCODE_24_ADD;
+    opcode_map[TK_SUB] = OPCODE_24_SUB;
 
     for (int i = 0; i < 32; ++i) {
         std::stringstream s;
@@ -38,14 +38,13 @@ void Parser::parse_program() {
         if (match(TK_IDENTIFIER)) {
             token = matched;
 
-            if (match(TK_COLON)) {
-                command = new Label(token);
-                commands.push_back(command);
-            } else {
-                parse_instruction();
-            }
+            expect(TK_COLON);
+            command = new Label(token);
+            commands.push_back(command);
         } else if (lookeahed(TK_DOT)) {
             parse_directive();
+        } else {
+            parse_instruction();
         }
     }
 }
@@ -55,41 +54,118 @@ void Parser::parse_directive() {
 }
 
 void Parser::parse_instruction() {
+    TokenKind kind;
     Opcode opcode;
     Token ra;
     Token rb;
     Token rc;
     Token immd;
 
-    if (opcode_map.count(matched.getLexem()) == 0) {
-        std::cout << "Error parsing instruction\n";
-        exit(0);
-    }
+    match();
+    kind = matched.getKind();
+    opcode = opcode_map[kind];
 
-    opcode = opcode_map[matched.getLexem()];
-
-    switch (opcode) {
-    case OPCODE_24_ADD:
-    case OPCODE_24_SUB:
-    case OPCODE_24_AND:
-    case OPCODE_24_OR:
-        expect(TK_IDENTIFIER);
+    switch (kind) {
+    case TK_ADD:
+    case TK_SUB:
+    case TK_AND:
+    case TK_OR:
+    case TK_XOR:
+        parse_integer_register();
         rc = matched;
 
         expect(TK_COMMA);
-        expect(TK_IDENTIFIER);
+        parse_integer_register();
         ra = matched;
 
         expect(TK_COMMA);
-        expect(TK_IDENTIFIER);
+        parse_integer_register();
         rb = matched;
 
         commands.push_back(new Instruction(opcode, ra, rb, rc));
         break;
+
+    case TK_ADDI:
+    case TK_ANDI:
+    case TK_ORI:
+    case TK_BEQ:
+    case TK_BNE:
+    case TK_BLT:
+    case TK_BGE:
+        parse_integer_register();
+        ra = matched;
+
+        expect(TK_COMMA);
+        parse_integer_register();
+        rb = matched;
+
+        expect(TK_COMMA);
+        if (match(TK_NUMBER)) {
+            immd = matched;
+        } else if (match(TK_IDENTIFIER)) {
+            immd = matched;
+        } else {
+            std::cout << "Error parsing ri instruction\n";
+            exit(0);
+        }
+
+        commands.push_back(new Instruction(opcode, ra, rb, immd));
+        break;
+
+        // ld rb, immd(ra)
+    case TK_LD:
+    case TK_LW:
+    case TK_LH:
+    case TK_LB:
+    case TK_LWU:
+    case TK_LHU:
+    case TK_LBU:
+        parse_integer_register();
+
     default:
+        std::cout << "Invalid instruction\n";
+        exit(0);
         break;
     }
 
+}
+
+void Parser::parse_integer_register() {
+    if (match(TK_R0)) return;
+    if (match(TK_R1)) return;
+    if (match(TK_R2)) return;
+    if (match(TK_R3)) return;
+    if (match(TK_R4)) return;
+    if (match(TK_R5)) return;
+    if (match(TK_R6)) return;
+    if (match(TK_R7)) return;
+    if (match(TK_R8)) return;
+    if (match(TK_R9)) return;
+    if (match(TK_R10)) return;
+    if (match(TK_R11)) return;
+    if (match(TK_R12)) return;
+    if (match(TK_R13)) return;
+    if (match(TK_R14)) return;
+    if (match(TK_R15)) return;
+    if (match(TK_R16)) return;
+    if (match(TK_R17)) return;
+    if (match(TK_R18)) return;
+    if (match(TK_R19)) return;
+    if (match(TK_R20)) return;
+    if (match(TK_R21)) return;
+    if (match(TK_R22)) return;
+    if (match(TK_R23)) return;
+    if (match(TK_R24)) return;
+    if (match(TK_R25)) return;
+    if (match(TK_R26)) return;
+    if (match(TK_R27)) return;
+    if (match(TK_R28)) return;
+    if (match(TK_R29)) return;
+    if (match(TK_R30)) return;
+    if (match(TK_R31)) return;
+
+    std::cout << "Error parsing integer register\n";
+    exit(0);
 }
 
 bool Parser::match(TokenKind kind) {
@@ -99,6 +175,11 @@ bool Parser::match(TokenKind kind) {
     }
 
     return false;
+}
+
+bool Parser::match() {
+    advance();
+    return true;
 }
 
 bool Parser::lookeahed(TokenKind kind) {

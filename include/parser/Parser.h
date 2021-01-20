@@ -21,9 +21,11 @@ namespace HivekAssembler {
         void parse_program();
         void parse_directive();
         void parse_instruction();
+        void parse_integer_register();
 
     private:
         bool match(TokenKind kind);
+        bool match();
         bool lookeahed(TokenKind kind);
         bool expect(TokenKind kind);
         bool hasNext();
@@ -32,7 +34,7 @@ namespace HivekAssembler {
     private:
         std::vector<Token> tokens;
         std::vector<Command*> commands;
-        std::map<std::string, Opcode> opcode_map;
+        std::map<TokenKind, Opcode> opcode_map;
         std::map<std::string, int> reg_map;
         int current_token_idx;
         Token matched;
